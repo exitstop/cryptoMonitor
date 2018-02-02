@@ -78,7 +78,7 @@ class TableConteiner:
 		# if self.indexX > 1 and self.indexX < 4:
 		# 	self.monitorSettings[self.indexY][tableListSort[self.indexX]] = self.monitorSettings[self.indexY][tableListSort[self.indexX]] - 0.00000001
 		# 	self.out()
-	def addCoin(func, coin, upPriceBell = 9999999, downPriceBell = 0, avaliableHold = 0, coeffUp = 1.05, coeffDown = 0.95):
+	def addCoin(self, func = 0, coin = 0, upPriceBell = 9999999, downPriceBell = 0, avaliableHold = 0, coeffUp = 1.05 , coeffDown = 0.95 ):
 		table.monitorSettings.append({"func": func, "coin": coin, "upPriceBell" : upPriceBell, "downPriceBell" : downPriceBell, "avaliableHold" : avaliableHold,	"coeffUp": coeffUp, "coeffDown": coeffDown})
 
 	def connect(self):
@@ -137,7 +137,7 @@ def on_press(key):
 	global table
 	global ex
 	try:
-		print('{0} press\n'.format(key))
+		# print('{0} press\n'.format(key))
 		# print('alphanumeric key {0} pressed\n'.format(key.char))	
 		if key == keyboard.Key.ctrl:
 			# Stop listener
@@ -161,8 +161,7 @@ def on_press(key):
 		else:
 			ex['ctrl'] = 0
 	except AttributeError:
-		print('special key {0} pressed'.format(
-		           key))
+		# print('special key {0} pressed'.format(    key))
 		pass
 		# print('special key {0} pressed'.format(	key))
 	table.out()
@@ -170,7 +169,7 @@ def on_press(key):
 def on_release(key):
 	global table
 	global ex
-	print('{0} released\n'.format(key))
+	# print('{0} released\n'.format(key))
 	try:
 		if key == keyboard.Key.esc:
 			pass
@@ -194,10 +193,10 @@ def ThreadMonitor():
 	# table.monitorSettings.append({"func": BinanceMarketMonitor, 	"coin": 'BCDBTC',	"upPriceBell" : 9.0, 			"downPriceBell" : 0, 			"avaliableHold" : 0,				"coeffUp": 1.05, "coeffDown": 0.95})
 	# table.monitorSettings.append({"func": BinanceMarketMonitor, 	"coin": 'BTCUSDT',	"upPriceBell" : 99999, 			"downPriceBell" : 0, 			"avaliableHold" : 0,				"coeffUp": 1.05, "coeffDown": 0.95})
 
-	table.addCoin(func = CryptopiaMarketMonitor, 	coin = 'HOLD_BTC', upPriceBell = 0.00000550, downPriceBell = 0.00000430, avaliableHold = 52006.50456414, coeffUp = 1.15, coeffDown = 0.85)
-	table.addCoin(func = BinanceMarketMonitor, 	 	coin = 'GTOBTC',  coeffUp = 1.15, coeffDown = 0.85)
-	table.addCoin(func = BinanceMarketMonitor,		coin = 'BCDBTC',  coeffUp = 1.15, coeffDown = 0.85)
-	table.addCoin(func = BinanceMarketMonitor,		coin = 'BTCUSDT', coeffUp = 1.15, coeffDown = 0.85)
+	table.addCoin( func = CryptopiaMarketMonitor, 	coin = 'HOLD_BTC', upPriceBell =0.00000550,  downPriceBell = 0.00000430, avaliableHold = 52006.50456414, coeffUp =1.15, coeffDown =0.85)
+	table.addCoin( BinanceMarketMonitor, 	'GTOBTC',  coeffUp = 1.15, coeffDown = 0.85)
+	table.addCoin( BinanceMarketMonitor,	'BCDBTC',  coeffUp = 1.15, coeffDown = 0.85)
+	table.addCoin( BinanceMarketMonitor,	'BTCUSDT', coeffUp = 1.15, coeffDown = 0.85)
 
 	while True:
 		try:
