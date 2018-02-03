@@ -214,9 +214,9 @@ def ThreadMonitor():
 	# table.monitorSettings.append({"func": BinanceMarketMonitor, 	"coin": 'BTCUSDT',	"upPriceBell" : 99999, 			"downPriceBell" : 0, 			"avaliableHold" : 0,				"coeffUp": 1.05, "coeffDown": 0.95})
 
 	table.addCoin( func = CryptopiaMarketMonitor, 	coin = 'HOLD_BTC', upPriceBell =0.00000550,  downPriceBell = 0.00000430, avaliableHold = 52006.50456414, coeffUp =1.15, coeffDown =0.85)
-	table.addCoin( BinanceMarketMonitor, 	'GTOBTC',  coeffUp = 1.15, coeffDown = 0.85)
-	table.addCoin( BinanceMarketMonitor,	'BCDBTC',  coeffUp = 1.15, coeffDown = 0.85)
-	table.addCoin( BinanceMarketMonitor,	'BTCUSDT', coeffUp = 1.15, coeffDown = 0.85)
+	table.addCoin( BinanceMarketMonitor, 	'GTOBTC')
+	table.addCoin( BinanceMarketMonitor,	'BCDBTC')
+	table.addCoin( BinanceMarketMonitor,	'BTCUSDT')
 
 	while True:
 		try:
