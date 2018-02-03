@@ -78,7 +78,7 @@ def PrintLine(date, color = 0):
 	xIndex += 10
 	stdscr.addstr(int(date["index"]), xIndex, str(("{:^15."+fFormat+"f}").format(date["lastPrice"])), curses.color_pair(color[3]))
 	xIndex += 15
-	if date["upPriceBell"]!= 9999999:
+	if date["upPriceBell"]!= 99999:
 		stdscr.addstr(int(date["index"]), xIndex, str(("⟙{:^15."+fFormat+"f}").format(date["upPriceBell"])), curses.color_pair(color[4]))
 	xIndex += 15
 	if date["downPriceBell"]!= 0:

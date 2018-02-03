@@ -78,12 +78,17 @@ class TableConteiner:
 		# if self.indexX > 1 and self.indexX < 4:
 		# 	self.monitorSettings[self.indexY][tableListSort[self.indexX]] = self.monitorSettings[self.indexY][tableListSort[self.indexX]] - 0.00000001
 		# 	self.out()
-	def addCoin(self, func = 0, coin = 0, upPriceBell = 9999999, downPriceBell = 0, avaliableHold = 0, coeffUp = 1.05 , coeffDown = 0.95 ):
-		table.monitorSettings.append({"func": func, "coin": coin, "upPriceBell" : upPriceBell, "downPriceBell" : downPriceBell, "avaliableHold" : avaliableHold,	"coeffUp": coeffUp, "coeffDown": coeffDown})
+	def addCoin(self, func = 0, coin = 0, upPriceBell = 99999.0, downPriceBell = 0, avaliableHold = 0, coeffUp = 1.05 , coeffDown = 0.95 ):
+		table.monitorSettings.append({"func": func, "coin": coin, "upPriceBell" : upPriceBell, "downPriceBell" : downPriceBell, "avaliableHold" : avaliableHold,	"coeffUp": coeffUp, "coeffDown": coeffDown, 'rocketPrice': 0})
 
 	def connect(self):
+		lIndex = 0
 		for item in self.monitorSettings:
-			self.showBank.append(  item["func"](coin = item["coin"], upPriceBell = item["upPriceBell"], downPriceBell = item["downPriceBell"], avaliableHold = item["avaliableHold"] ) )
+			dT = item["func"](coin = item["coin"], upPriceBell = item["upPriceBell"], downPriceBell = item["downPriceBell"], avaliableHold = item["avaliableHold"]) 
+			dictTemp = {"exchangeName":dT['exchangeName'],"label":dT['label'],"lastPrice":dT['lastPrice'], 
+						"upPriceBell":dT['upPriceBell'], "downPriceBell":dT['downPriceBell'], 
+						"avaliableHold":dT['avaliableHold'], "coeffUp": item['coeffUp'], "coeffDown": item['coeffDown']}
+			self.showBank.append( dictTemp )
 		self.swap()
 		self.rocket["cout"] = self.rocket["cout"] + 1
 
@@ -93,24 +98,38 @@ class TableConteiner:
 		for Item in self.swapBank:
 			Item.update({"index":lIndex})
 
-			Item['upPriceBell'] = self.monitorSettings[lIndex]["upPriceBell"]
-			Item['downPriceBell'] = self.monitorSettings[lIndex]["downPriceBell"]
+			color=[0,3,3,0,3,3,0]
+			# if self.rocket["cout"] == 2:
+			# 	Item["lastPrice"] = Item["lastPrice"] * Item["coeffDown"]
+
+			if self.rocket["cout"] == 1:
+				self.monitorSettings[lIndex]["rocketPrice"] = Item["lastPrice"]
+			elif self.rocket["cout"] >= 2 or self.rocket["cout"] >= 24 or self.rocket["cout"] >= 60:
+				self.rocket["cout"] = 0
+				if self.monitorSettings[lIndex]["rocketPrice"] * Item["coeffUp"] <= Item["lastPrice"] :
+					color=[2 for i in range(7)] 
+					PlaySound(soundSirenaFile2, sirenaSecond2)					
+				elif self.monitorSettings[lIndex]["rocketPrice"] * Item["coeffDown"] >= Item["lastPrice"]:
+					color=[1 for i in range(7)]
+					PlaySound(soundSirenaFile1, sirenaSecond)
+
+
+			Item['upPriceBell'] = self.monitorSettings[lIndex]["rocketPrice"] * Item["coeffUp"]
+			Item['downPriceBell'] = self.monitorSettings[lIndex]["rocketPrice"] * Item["coeffDown"]
+			# Item['upPriceBell'] = self.monitorSettings[lIndex]["upPriceBell"]
+			# Item['downPriceBell'] = self.monitorSettings[lIndex]["downPriceBell"]
 			Item['avaliableHold'] = self.monitorSettings[lIndex]["avaliableHold"]
 
-			color=[0,3,3,0,3,3,0]
-			if Item["lastPrice"] >= Item["upPriceBell"]:
-				PlaySound(soundSirenaFile, sirenaSecond)
-				color=[2 for i in range(7)] 
-			elif Item["lastPrice"] <=  Item["downPriceBell"]:
-				PlaySound(soundSirenaFile1, sirenaSecond)
-				color=[1 for i in range(7)]
+			
+			# if Item["lastPrice"] >= Item["upPriceBell"]:
+			# 	PlaySound(soundSirenaFile, sirenaSecond)
+			# 	color=[2 for i in range(7)] 
+			# elif Item["lastPrice"] <=  Item["downPriceBell"]:
+			# 	PlaySound(soundSirenaFile1, sirenaSecond)
+			# 	color=[1 for i in range(7)]
 
-			if self.rocket["cout"] >= 12 or self.rocket["cout"] >= 24 or self.rocket["cout"] >= 60:
-				self.rocket["cout"] = 0
-				if rocket["price"] <= Item["lastPrice"] * Item["coeffUp"]:
-					PlaySound(soundSirenaFile2, sirenaSecond2)
-				elif rocket["price"] >= Item["lastPrice"] * Item["coeffDown"]:
-					PlaySound(soundSirenaFile1, sirenaSecond)	
+			
+
 			
 			# if lIndex == self.indexY:
 			# 	color = [4 for i in range(7)]
@@ -213,6 +232,7 @@ def ThreadMonitor():
 			sys.exit()
 			raise
 		except  Exception as inst:
+			PlaySound("sound/zvuk_bjushhegosja_stekla.ogg", 2); sleep(2)
 			print type(inst)     # the exception instance
 			print inst.args      # arguments stored in .args
 			print inst   
