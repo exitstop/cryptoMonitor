@@ -105,7 +105,8 @@ class TableConteiner:
 			if self.rocket["cout"] == 1:
 				self.monitorSettings[lIndex]["rocketPrice"] = Item["lastPrice"]
 			elif self.rocket["cout"] >= 2 or self.rocket["cout"] >= 24 or self.rocket["cout"] >= 60:
-				self.rocket["cout"] = 0
+				if self.rocket["cout"] >= 60:
+					self.rocket["cout"] = 0
 				if self.monitorSettings[lIndex]["rocketPrice"] * Item["coeffUp"] <= Item["lastPrice"] :
 					color=[2 for i in range(7)] 
 					PlaySound(soundSirenaFile2, sirenaSecond2)					
