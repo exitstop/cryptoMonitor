@@ -138,6 +138,7 @@ class TableConteiner:
 			# 	color[self.indexX] = 2
 			PrintLine(Item, color = color)
 			lIndex += 1
+		stdscr.addstr(lIndex, 0, str("exit: ctrl+q"), curses.color_pair(color[0]))
 		stdscr.refresh()
 
 	def swap(self):
@@ -220,6 +221,7 @@ def ThreadMonitor():
 	table.addCoin( BinanceMarketMonitor,	'BCDBTC')
 	table.addCoin( BinanceMarketMonitor,	'BTCUSDT')
 	table.addCoin( KucoinMarketMonitor,		'ZPT-NEO')
+	table.addCoin( KucoinMarketMonitor,		'KEY-BTC')
 
 	while True:
 		try:
