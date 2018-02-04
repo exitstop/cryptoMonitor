@@ -78,12 +78,12 @@ class TableConteiner:
 			self.monitorSettings[self.indexY][tableListSort[self.indexX]] = self.monitorSettings[self.indexY][tableListSort[self.indexX]] - 0.00000001
 			self.out()
 		# if self.indexX > 1 and self.indexX < 4:
-		# 	self.monitorSettings[self.indexY][tableListSort[self.indexX]] = self.monitorSettings[self.indexY][tableListSort[self.indexX]] - 0.00000001
-		# 	self.out()
+		#   self.monitorSettings[self.indexY][tableListSort[self.indexX]] = self.monitorSettings[self.indexY][tableListSort[self.indexX]] - 0.00000001
+		#   self.out()
 	def addCoin(self, func = 0, coin = 0, upPriceBell = 99999.0, downPriceBell = 0, avaliableHold = 0, coeffUp = 1.03 , coeffDown = 0.97 ):
-		table.monitorSettings.append({"func": func, "coin": coin, "upPriceBell" : upPriceBell, "downPriceBell" : downPriceBell, "avaliableHold" : avaliableHold,	"coeffUp": coeffUp, "coeffDown": coeffDown, 'rocketPrice': 0})
+		table.monitorSettings.append({"func": func, "coin": coin, "upPriceBell" : upPriceBell, "downPriceBell" : downPriceBell, "avaliableHold" : avaliableHold,    "coeffUp": coeffUp, "coeffDown": coeffDown, 'rocketPrice': 0})
 
-	def connect(self):		
+	def connect(self):      
 		lIndex = 0
 		for item in self.monitorSettings:
 			try:
@@ -93,8 +93,8 @@ class TableConteiner:
 							"avaliableHold":dT['avaliableHold'], "coeffUp": item['coeffUp'], "coeffDown": item['coeffDown']}
 				self.showBank.append( dictTemp )
 			except:
-			    print "Unexpected error:", sys.exc_info()[0]
-			    raise	
+				print "Unexpected error:", sys.exc_info()[0]
+				raise   
 		self.swap()
 		self.rocket["cout"] = self.rocket["cout"] + 1
 
@@ -106,7 +106,7 @@ class TableConteiner:
 
 			color=[0,3,3,0,3,3,0]
 			# if self.rocket["cout"] == 2:
-			# 	Item["lastPrice"] = Item["lastPrice"] * Item["coeffDown"]
+			#   Item["lastPrice"] = Item["lastPrice"] * Item["coeffDown"]
 
 			if self.rocket["cout"] == 1:
 				self.monitorSettings[lIndex]["rocketPrice"] = Item["lastPrice"]
@@ -115,7 +115,7 @@ class TableConteiner:
 					self.rocket["cout"] = 0
 				if self.monitorSettings[lIndex]["rocketPrice"] * Item["coeffUp"] <= Item["lastPrice"] :
 					color=[2 for i in range(7)] 
-					PlaySound(soundSirenaFile2, sirenaSecond2)					
+					PlaySound(soundSirenaFile2, sirenaSecond2)                  
 				elif self.monitorSettings[lIndex]["rocketPrice"] * Item["coeffDown"] >= Item["lastPrice"]:
 					color=[1 for i in range(7)]
 					PlaySound(soundSirenaFile1, sirenaSecond)
@@ -139,8 +139,8 @@ class TableConteiner:
 
 			
 			# if lIndex == self.indexY:
-			# 	color = [4 for i in range(7)]
-			# 	color[self.indexX] = 2
+			#   color = [4 for i in range(7)]
+			#   color[self.indexX] = 2
 			PrintLine(Item, color = color)
 			lIndex += 1
 		# stdscr.addstr(lIndex, 0, str("exit: ctrl+q"), curses.color_pair(0))
@@ -160,79 +160,24 @@ table = TableConteiner()
 ex = {"ctrl": 0, "c": 0}
 
 
-def on_press(key):
-	global table
-	global ex
-	try:
-		# print('{0} press\n'.format(key))
-		# print('alphanumeric key {0} pressed\n'.format(key.char))	
-		if key == keyboard.Key.ctrl:
-			# Stop listener
-
-			ex['ctrl'] = 1
-			# sys.exit()
-		elif key.char == 'q':
-			# ex['c'] = 1
-			if ex['ctrl'] == 1:
-				PlaySound("sound/R2D2.ogg", 2)
-				sleep(2)
-				sys.exit()
-		elif key == keyboard.Key.up:
-			table.up()
-		elif key == keyboard.Key.down:
-			table.down()
-		elif key == keyboard.Key.right:
-			table.right()
-		elif key == keyboard.Key.left:
-			table.left()
-		else:
-			ex['ctrl'] = 0
-	except:
-		# print('special key {0} pressed'.format(    key))
-		print "key error"
-		pass
-	table.out()
-
-def on_release(key):
-	global table
-	global ex
-	# print('{0} released\n'.format(key))
-	try:
-		if key == keyboard.Key.esc:
-			pass
-		elif key.char == '=':
-			table.inc()
-		elif key.char== '-':
-			table.dec()
-		elif key == keyboard.Key.ctrl:
-			ex['ctrl'] = 0
-	except:
-	# except AttributeError:
-		# print('special key {0} pressed'.format(	key))
-		print "key error"
-		pass
-
-
-
-
 def ThreadMonitor():
 	global table
-	# table.monitorSettings.append({"func": CryptopiaMarketMonitor, 	"coin": 'HOLD_BTC',	"upPriceBell" : 0.00000550, 	"downPriceBell" : 0.00000430, 	"avaliableHold" : 52006.50456414,	"coeffUp": 1.15, "coeffDown": 0.85})
-	# table.monitorSettings.append({"func": BinanceMarketMonitor, 	"coin": 'GTOBTC',	"upPriceBell" : 9.0	, 			"downPriceBell" : 0, 			"avaliableHold" : 0, 				"coeffUp": 1.05, "coeffDown": 0.95})
-	# table.monitorSettings.append({"func": BinanceMarketMonitor, 	"coin": 'BCDBTC',	"upPriceBell" : 9.0, 			"downPriceBell" : 0, 			"avaliableHold" : 0,				"coeffUp": 1.05, "coeffDown": 0.95})
-	# table.monitorSettings.append({"func": BinanceMarketMonitor, 	"coin": 'BTCUSDT',	"upPriceBell" : 99999, 			"downPriceBell" : 0, 			"avaliableHold" : 0,				"coeffUp": 1.05, "coeffDown": 0.95})
+	# table.monitorSettings.append({"func": CryptopiaMarketMonitor,     "coin": 'HOLD_BTC', "upPriceBell" : 0.00000550,     "downPriceBell" : 0.00000430,   "avaliableHold" : 52006.50456414,   "coeffUp": 1.15, "coeffDown": 0.85})
+	# table.monitorSettings.append({"func": BinanceMarketMonitor,   "coin": 'GTOBTC',   "upPriceBell" : 9.0 ,           "downPriceBell" : 0,            "avaliableHold" : 0,                "coeffUp": 1.05, "coeffDown": 0.95})
+	# table.monitorSettings.append({"func": BinanceMarketMonitor,   "coin": 'BCDBTC',   "upPriceBell" : 9.0,            "downPriceBell" : 0,            "avaliableHold" : 0,                "coeffUp": 1.05, "coeffDown": 0.95})
+	# table.monitorSettings.append({"func": BinanceMarketMonitor,   "coin": 'BTCUSDT',  "upPriceBell" : 99999,          "downPriceBell" : 0,            "avaliableHold" : 0,                "coeffUp": 1.05, "coeffDown": 0.95})
 
-	table.addCoin( func = CryptopiaMarketMonitor, 	coin = 'HOLD_BTC', upPriceBell =0.00000550,  downPriceBell = 0.00000430, avaliableHold = 52006.50456414, coeffUp =1.10, coeffDown =0.90)
-	table.addCoin( BinanceMarketMonitor, 	'GTOBTC')
-	table.addCoin( BinanceMarketMonitor, 	'AIONBTC')
-	table.addCoin( BinanceMarketMonitor,	'BCDBTC', coeffUp = 1.05, coeffDown = 0.95)
-	table.addCoin( BinanceMarketMonitor,	'BTCUSDT')
-	table.addCoin( KucoinMarketMonitor,		'ZPT-NEO', coeffUp = 1.05, coeffDown = 0.95)
-	table.addCoin( KucoinMarketMonitor,		'KEY-BTC', coeffUp = 1.05, coeffDown = 0.95)
-	table.addCoin( KucoinMarketMonitor,		'OCN-BTC', coeffUp = 1.05, coeffDown = 0.95)
-	table.addCoin( KucoinMarketMonitor,		'COFI-BTC', coeffUp = 1.05, coeffDown = 0.95)
-	table.addCoin( GateMarketMonitor,		'jnt_usdt')
-	table.addCoin( GateMarketMonitor,		'nas_usdt')
+	table.addCoin( func = CryptopiaMarketMonitor,   coin = 'HOLD_BTC', upPriceBell =0.00000550,  downPriceBell = 0.00000430, avaliableHold = 52006.50456414, coeffUp =1.10, coeffDown =0.90)
+	table.addCoin( BinanceMarketMonitor,    'GTOBTC')
+	table.addCoin( BinanceMarketMonitor,    'AIONBTC')
+	table.addCoin( BinanceMarketMonitor,    'BCDBTC', coeffUp = 1.05, coeffDown = 0.95)
+	table.addCoin( BinanceMarketMonitor,    'BTCUSDT')
+	table.addCoin( KucoinMarketMonitor,     'ZPT-NEO', coeffUp = 1.05, coeffDown = 0.95)
+	table.addCoin( KucoinMarketMonitor,     'KEY-BTC', coeffUp = 1.05, coeffDown = 0.95)
+	table.addCoin( KucoinMarketMonitor,     'OCN-BTC', coeffUp = 1.05, coeffDown = 0.95)
+	table.addCoin( KucoinMarketMonitor,     'COFI-BTC', coeffUp = 1.05, coeffDown = 0.95)
+	table.addCoin( GateMarketMonitor,       'jnt_usdt', coeffUp = 1.05, coeffDown = 0.95)
+	table.addCoin( GateMarketMonitor,       'nas_usdt', coeffUp = 1.05, coeffDown = 0.95)
 	print("get price...")
 
 	while True:
@@ -265,8 +210,34 @@ from http.server import HTTPServer, CGIHTTPRequestHandler
 # curses.nocbreak(); stdscr.keypad(0); curses.echo()
 
 
-def main():
 
+
+def keyb():
+	global stdscr
+	# stdscr.nodelay(True)
+	key=""
+	# stdscr.clear()                
+	# stdscr.addstr("Detected key:")
+	while 1:          
+		try:                 
+			key = stdscr.getkey()         
+			# stdscr.clear()                
+			# stdscr.addstr("Detected key:")
+			stdscr.addstr(str(key))
+			if key == 'q':
+				PlaySound("sound/R2D2.ogg", 2);	sleep(2)
+				curses.endwin()
+				sys.exit()
+			elif key == 'a':
+				PlaySound("sound/nemeckaja-rech-i-signal-trevogi.ogg", 2);	sleep(2)
+			elif key == os.linesep:
+				break           
+		except Exception as e:
+		   # No input   
+		   pass   
+
+
+def main():
 	# while True:
 
 	# server_address = ("", 8000)
@@ -277,11 +248,15 @@ def main():
 	f.daemon = True
 	f.start()
 
+
+	f = threading.Thread(target=keyb)
+	f.start()
+
 	# # Collect events until released
-	with keyboard.Listener(	on_release	=	on_release,
-							on_press	=	on_press
-			) as listener:
-		listener.join()
+	# with keyboard.Listener(   on_release  =   on_release,
+	#                       on_press    =   on_press
+	#       ) as listener:
+	#   listener.join()
 
 
 	# price_check_gate_io('qash_eth')
@@ -290,7 +265,13 @@ def main():
 	# f.daemon = True
 	# f.start()
 
+
+
 main()
+
+
+
+
 
 
 
