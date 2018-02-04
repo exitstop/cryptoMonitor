@@ -37,6 +37,7 @@ from gtts import gTTS
 
 from libCryptopia import *
 from libBinance import *
+from libKucoin import *
 from libMyCommon import *
 
 tableListSort = ["index","func","coin","lastPrice","upPriceBell","downPriceBell","avaliableHold"]
@@ -122,12 +123,12 @@ class TableConteiner:
 			Item['avaliableHold'] = self.monitorSettings[lIndex]["avaliableHold"]
 
 			
-			# if Item["lastPrice"] >= Item["upPriceBell"]:
-			# 	PlaySound(soundSirenaFile, sirenaSecond)
-			# 	color=[2 for i in range(7)] 
-			# elif Item["lastPrice"] <=  Item["downPriceBell"]:
-			# 	PlaySound(soundSirenaFile1, sirenaSecond)
-			# 	color=[1 for i in range(7)]
+			if Item["lastPrice"] >= Item["upPriceBell"]:
+				PlaySound(soundSirenaFile, sirenaSecond)
+				color=[2 for i in range(7)] 
+			elif Item["lastPrice"] <=  Item["downPriceBell"]:
+				PlaySound(soundSirenaFile1, sirenaSecond)
+				color=[1 for i in range(7)]
 
 			
 
@@ -213,10 +214,12 @@ def ThreadMonitor():
 	# table.monitorSettings.append({"func": BinanceMarketMonitor, 	"coin": 'BCDBTC',	"upPriceBell" : 9.0, 			"downPriceBell" : 0, 			"avaliableHold" : 0,				"coeffUp": 1.05, "coeffDown": 0.95})
 	# table.monitorSettings.append({"func": BinanceMarketMonitor, 	"coin": 'BTCUSDT',	"upPriceBell" : 99999, 			"downPriceBell" : 0, 			"avaliableHold" : 0,				"coeffUp": 1.05, "coeffDown": 0.95})
 
-	table.addCoin( func = CryptopiaMarketMonitor, 	coin = 'HOLD_BTC', upPriceBell =0.00000550,  downPriceBell = 0.00000430, avaliableHold = 52006.50456414, coeffUp =1.15, coeffDown =0.85)
+	table.addCoin( func = CryptopiaMarketMonitor, 	coin = 'HOLD_BTC', upPriceBell =0.00000550,  downPriceBell = 0.00000430, avaliableHold = 52006.50456414, coeffUp =1.10, coeffDown =0.90)
 	table.addCoin( BinanceMarketMonitor, 	'GTOBTC')
+	table.addCoin( BinanceMarketMonitor, 	'AIONBTC')
 	table.addCoin( BinanceMarketMonitor,	'BCDBTC')
 	table.addCoin( BinanceMarketMonitor,	'BTCUSDT')
+	table.addCoin( KucoinMarketMonitor,		'ZPT-NEO')
 
 	while True:
 		try:

@@ -39,10 +39,10 @@ from libMyCommon import *
 
 
 
-def BinanceMarket(coin):	
+def KucoinMarket(coin):	
 	nonce=int(time.time())
-	uri='https://www.binance.com/api/v3/ticker/price?symbol='+coin
-	conn = httplib.HTTPSConnection("www.binance.com")		
+	uri='https://api.kucoin.com/v1/open/tick?symbol='+coin
+	conn = httplib.HTTPSConnection("api.kucoin.com")		
 	conn.request("GET", uri)
 	r1 = conn.getresponse()
 	# print r1.status, r1.reason
@@ -55,10 +55,13 @@ def BinanceMarket(coin):
 	return json_parse_data
 
 
-
-def BinanceMarketMonitor(coin, upPriceBell = 999.99999999, downPriceBell = 0, avaliableHold = 0):
-	exchangeName = 'binance'
-	jsonReturn = BinanceMarket(coin)
-	lastPrice = float(jsonReturn['price'])
-	label = jsonReturn['symbol']
+# {"success":true,"code":"OK","msg":"Operation succeeded.","timestamp":1517757936115,"data":{"coinType":"ZPT","trading":true,"symbol":"ZPT-NEO","lastDealPrice":9.55E-4,
+# "buy":9.55E-4,"sell":9.56E-4,"change":-4.3E-5,"coinTypePair":"NEO","sort":0,"feeRate":0.001,"volValue":68105.64636727,"high":0.001041,"datetime":1517757934000,
+# "vol":7.1414813384E7,"low":8.8E-4,"changeRate":-0.0431}}
+def KucoinMarketMonitor(coin, upPriceBell = 999.99999999, downPriceBell = 0, avaliableHold = 0):
+	exchangeName = 'kucoin'
+	jsonReturn = KucoinMarket(coin)
+	lastPrice = float(jsonReturn['data']['lastDealPrice'])
+	label = jsonReturn['data']['symbol']
+	# volValue = jsonReturn['data']['volValue']
 	return {"exchangeName":exchangeName,"label":label,"lastPrice":lastPrice, "upPriceBell":upPriceBell, "downPriceBell":downPriceBell, "avaliableHold":avaliableHold}
