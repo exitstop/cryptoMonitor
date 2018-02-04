@@ -80,17 +80,21 @@ class TableConteiner:
 		# if self.indexX > 1 and self.indexX < 4:
 		# 	self.monitorSettings[self.indexY][tableListSort[self.indexX]] = self.monitorSettings[self.indexY][tableListSort[self.indexX]] - 0.00000001
 		# 	self.out()
-	def addCoin(self, func = 0, coin = 0, upPriceBell = 99999.0, downPriceBell = 0, avaliableHold = 0, coeffUp = 1.05 , coeffDown = 0.95 ):
+	def addCoin(self, func = 0, coin = 0, upPriceBell = 99999.0, downPriceBell = 0, avaliableHold = 0, coeffUp = 1.03 , coeffDown = 0.97 ):
 		table.monitorSettings.append({"func": func, "coin": coin, "upPriceBell" : upPriceBell, "downPriceBell" : downPriceBell, "avaliableHold" : avaliableHold,	"coeffUp": coeffUp, "coeffDown": coeffDown, 'rocketPrice': 0})
 
-	def connect(self):
+	def connect(self):		
 		lIndex = 0
 		for item in self.monitorSettings:
-			dT = item["func"](coin = item["coin"], upPriceBell = item["upPriceBell"], downPriceBell = item["downPriceBell"], avaliableHold = item["avaliableHold"]) 
-			dictTemp = {"exchangeName":dT['exchangeName'],"label":dT['label'],"lastPrice":dT['lastPrice'], 
-						"upPriceBell":dT['upPriceBell'], "downPriceBell":dT['downPriceBell'], 
-						"avaliableHold":dT['avaliableHold'], "coeffUp": item['coeffUp'], "coeffDown": item['coeffDown']}
-			self.showBank.append( dictTemp )
+			try:
+				dT = item["func"](coin = item["coin"], upPriceBell = item["upPriceBell"], downPriceBell = item["downPriceBell"], avaliableHold = item["avaliableHold"]) 
+				dictTemp = {"exchangeName":dT['exchangeName'],"label":dT['label'],"lastPrice":dT['lastPrice'], 
+							"upPriceBell":dT['upPriceBell'], "downPriceBell":dT['downPriceBell'], 
+							"avaliableHold":dT['avaliableHold'], "coeffUp": item['coeffUp'], "coeffDown": item['coeffDown']}
+				self.showBank.append( dictTemp )
+			except:
+			    print "Unexpected error:", sys.exc_info()[0]
+			    raise	
 		self.swap()
 		self.rocket["cout"] = self.rocket["cout"] + 1
 
@@ -139,7 +143,7 @@ class TableConteiner:
 			# 	color[self.indexX] = 2
 			PrintLine(Item, color = color)
 			lIndex += 1
-		stdscr.addstr(lIndex, 0, str("exit: ctrl+q"), curses.color_pair(0))
+		# stdscr.addstr(lIndex, 0, str("exit: ctrl+q"), curses.color_pair(0))
 		stdscr.refresh()
 
 	def swap(self):
@@ -183,10 +187,10 @@ def on_press(key):
 			table.left()
 		else:
 			ex['ctrl'] = 0
-	except AttributeError:
+	except:
 		# print('special key {0} pressed'.format(    key))
+		print "key error"
 		pass
-		# print('special key {0} pressed'.format(	key))
 	table.out()
 
 def on_release(key):
@@ -202,8 +206,10 @@ def on_release(key):
 			table.dec()
 		elif key == keyboard.Key.ctrl:
 			ex['ctrl'] = 0
-	except AttributeError:
+	except:
+	# except AttributeError:
 		# print('special key {0} pressed'.format(	key))
+		print "key error"
 		pass
 
 
@@ -219,11 +225,12 @@ def ThreadMonitor():
 	table.addCoin( func = CryptopiaMarketMonitor, 	coin = 'HOLD_BTC', upPriceBell =0.00000550,  downPriceBell = 0.00000430, avaliableHold = 52006.50456414, coeffUp =1.10, coeffDown =0.90)
 	table.addCoin( BinanceMarketMonitor, 	'GTOBTC')
 	table.addCoin( BinanceMarketMonitor, 	'AIONBTC')
-	table.addCoin( BinanceMarketMonitor,	'BCDBTC')
+	table.addCoin( BinanceMarketMonitor,	'BCDBTC', coeffUp = 1.05, coeffDown = 0.95)
 	table.addCoin( BinanceMarketMonitor,	'BTCUSDT')
-	table.addCoin( KucoinMarketMonitor,		'ZPT-NEO')
-	table.addCoin( KucoinMarketMonitor,		'KEY-BTC')
-	table.addCoin( KucoinMarketMonitor,		'OCN-BTC')
+	table.addCoin( KucoinMarketMonitor,		'ZPT-NEO', coeffUp = 1.05, coeffDown = 0.95)
+	table.addCoin( KucoinMarketMonitor,		'KEY-BTC', coeffUp = 1.05, coeffDown = 0.95)
+	table.addCoin( KucoinMarketMonitor,		'OCN-BTC', coeffUp = 1.05, coeffDown = 0.95)
+	table.addCoin( KucoinMarketMonitor,		'COFI-BTC', coeffUp = 1.05, coeffDown = 0.95)
 	table.addCoin( GateMarketMonitor,		'jnt_usdt')
 	table.addCoin( GateMarketMonitor,		'nas_usdt')
 	print("get price...")

@@ -40,6 +40,7 @@ from libMyCommon import *
 
 
 def KucoinMarket(coin):	
+	
 	nonce=int(time.time())
 	uri='https://api.kucoin.com/v1/open/tick?symbol='+coin
 	conn = httplib.HTTPSConnection("api.kucoin.com")		
