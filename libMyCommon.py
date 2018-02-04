@@ -86,6 +86,3 @@ def PrintLine(date, color = 0):
 	xIndex += 15
 	if date["avaliableHold"]!= 0:
 		stdscr.addstr(int(date["index"]), xIndex, str("{:^15}".format(date["avaliableHold"]*date["lastPrice"])), curses.color_pair(color[6]))
-
-
-

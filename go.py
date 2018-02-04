@@ -38,6 +38,7 @@ from gtts import gTTS
 from libCryptopia import *
 from libBinance import *
 from libKucoin import *
+from libGate import *
 from libMyCommon import *
 
 tableListSort = ["index","func","coin","lastPrice","upPriceBell","downPriceBell","avaliableHold"]
@@ -222,6 +223,9 @@ def ThreadMonitor():
 	table.addCoin( BinanceMarketMonitor,	'BTCUSDT')
 	table.addCoin( KucoinMarketMonitor,		'ZPT-NEO')
 	table.addCoin( KucoinMarketMonitor,		'KEY-BTC')
+	table.addCoin( GateMarketMonitor,		'jnt_usdt')
+	table.addCoin( GateMarketMonitor,		'nas_usdt')
+	print("get price...")
 
 	while True:
 		try:
