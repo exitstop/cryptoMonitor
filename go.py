@@ -85,6 +85,8 @@ class TableConteiner:
 
 	def connect(self):      
 		lIndex = 0
+
+		
 		for item in self.monitorSettings:
 			try:
 				dT = item["func"](coin = item["coin"], upPriceBell = item["upPriceBell"], downPriceBell = item["downPriceBell"], avaliableHold = item["avaliableHold"]) 
@@ -92,58 +94,69 @@ class TableConteiner:
 							"upPriceBell":dT['upPriceBell'], "downPriceBell":dT['downPriceBell'], 
 							"avaliableHold":dT['avaliableHold'], "coeffUp": item['coeffUp'], "coeffDown": item['coeffDown']}
 				self.showBank.append( dictTemp )
+
 			except:
 				print "Unexpected error:", sys.exc_info()[0]
-				raise   
+				raise  
+			
 		self.swap()
 		self.rocket["cout"] = self.rocket["cout"] + 1
 
 	def out(self):
 		stdscr.clear()
 		lIndex = 0
+		playSound = 0
 		for Item in self.swapBank:
-			Item.update({"index":lIndex})
+			try:
+				Item.update({"index":lIndex})
 
-			color=[0,3,3,0,3,3,0]
-			# if self.rocket["cout"] == 2:
-			#   Item["lastPrice"] = Item["lastPrice"] * Item["coeffDown"]
+				color=[0,3,3,0,3,3,0]
+				# if self.rocket["cout"] == 2:
+				#   Item["lastPrice"] = Item["lastPrice"] * Item["coeffDown"]
 
-			if self.rocket["cout"] == 1:
-				self.monitorSettings[lIndex]["rocketPrice"] = Item["lastPrice"]
-			elif self.rocket["cout"] >= 2 or self.rocket["cout"] >= 24 or self.rocket["cout"] >= 60:
-				if self.rocket["cout"] >= 60:
-					self.rocket["cout"] = 0
-				if self.monitorSettings[lIndex]["rocketPrice"] * Item["coeffUp"] <= Item["lastPrice"] :
+				if self.rocket["cout"] == 1:
+					self.monitorSettings[lIndex]["rocketPrice"] = Item["lastPrice"]
+				elif self.rocket["cout"] >= 2 or self.rocket["cout"] >= 24 or self.rocket["cout"] >= 60:
+					if self.rocket["cout"] >= 60:
+						self.rocket["cout"] = 0
+					if self.monitorSettings[lIndex]["rocketPrice"] * Item["coeffUp"] <= Item["lastPrice"] :
+						color=[2 for i in range(7)] 
+						# PlaySound(soundSirenaFile2, sirenaSecond2)                  
+					elif self.monitorSettings[lIndex]["rocketPrice"] * Item["coeffDown"] >= Item["lastPrice"]:
+						color=[1 for i in range(7)]
+						# PlaySound(soundSirenaFile1, sirenaSecond)
+
+
+				Item['upPriceBell'] = self.monitorSettings[lIndex]["rocketPrice"] * Item["coeffUp"]
+				Item['downPriceBell'] = self.monitorSettings[lIndex]["rocketPrice"] * Item["coeffDown"]
+				# Item['upPriceBell'] = self.monitorSettings[lIndex]["upPriceBell"]
+				# Item['downPriceBell'] = self.monitorSettings[lIndex]["downPriceBell"]
+				Item['avaliableHold'] = self.monitorSettings[lIndex]["avaliableHold"]
+
+				
+				if Item["lastPrice"] >= Item["upPriceBell"]:
+					playSound = 1
 					color=[2 for i in range(7)] 
-					PlaySound(soundSirenaFile2, sirenaSecond2)                  
-				elif self.monitorSettings[lIndex]["rocketPrice"] * Item["coeffDown"] >= Item["lastPrice"]:
+				elif Item["lastPrice"] <=  Item["downPriceBell"]:
+					playSound = 2
 					color=[1 for i in range(7)]
-					PlaySound(soundSirenaFile1, sirenaSecond)
 
+				
 
-			Item['upPriceBell'] = self.monitorSettings[lIndex]["rocketPrice"] * Item["coeffUp"]
-			Item['downPriceBell'] = self.monitorSettings[lIndex]["rocketPrice"] * Item["coeffDown"]
-			# Item['upPriceBell'] = self.monitorSettings[lIndex]["upPriceBell"]
-			# Item['downPriceBell'] = self.monitorSettings[lIndex]["downPriceBell"]
-			Item['avaliableHold'] = self.monitorSettings[lIndex]["avaliableHold"]
-
-			
-			if Item["lastPrice"] >= Item["upPriceBell"]:
-				PlaySound(soundSirenaFile, sirenaSecond)
-				color=[2 for i in range(7)] 
-			elif Item["lastPrice"] <=  Item["downPriceBell"]:
-				PlaySound(soundSirenaFile1, sirenaSecond)
-				color=[1 for i in range(7)]
-
-			
-
-			
-			# if lIndex == self.indexY:
-			#   color = [4 for i in range(7)]
-			#   color[self.indexX] = 2
-			PrintLine(Item, color = color)
-			lIndex += 1
+				
+				# if lIndex == self.indexY:
+				#   color = [4 for i in range(7)]
+				#   color[self.indexX] = 2
+				PrintLine(Item, color = color)
+				lIndex += 1
+			except:
+				print "Unexpected error:", sys.exc_info()[0]
+				raise 
 		# stdscr.addstr(lIndex, 0, str("exit: ctrl+q"), curses.color_pair(0))
+		if playSound == 1:
+			PlaySound(soundSirenaFile, sirenaSecond)
+		elif playSound == 2:
+			PlaySound(soundSirenaFile1, sirenaSecond)
 		stdscr.refresh()
 
 	def swap(self):
@@ -167,17 +180,18 @@ def ThreadMonitor():
 	# table.monitorSettings.append({"func": BinanceMarketMonitor,   "coin": 'BCDBTC',   "upPriceBell" : 9.0,            "downPriceBell" : 0,            "avaliableHold" : 0,                "coeffUp": 1.05, "coeffDown": 0.95})
 	# table.monitorSettings.append({"func": BinanceMarketMonitor,   "coin": 'BTCUSDT',  "upPriceBell" : 99999,          "downPriceBell" : 0,            "avaliableHold" : 0,                "coeffUp": 1.05, "coeffDown": 0.95})
 
-	table.addCoin( func = CryptopiaMarketMonitor,   coin = 'HOLD_BTC', upPriceBell =0.00000550,  downPriceBell = 0.00000430, avaliableHold = 52006.50456414, coeffUp =1.10, coeffDown =0.90)
-	table.addCoin( BinanceMarketMonitor,    'GTOBTC')
-	table.addCoin( BinanceMarketMonitor,    'AIONBTC')
-	table.addCoin( BinanceMarketMonitor,    'BCDBTC', coeffUp = 1.05, coeffDown = 0.95)
+	# total (HOLD) 52006.50456414 + 4920.296464350002 = 56926.80102849
+	table.addCoin( func = CryptopiaMarketMonitor,   coin = 'HOLD_BTC', upPriceBell =0.00000550,  downPriceBell = 0.00000430, avaliableHold = 56926.80102849 , coeffUp =1.10, coeffDown =0.90)
 	table.addCoin( BinanceMarketMonitor,    'BTCUSDT')
-	table.addCoin( KucoinMarketMonitor,     'ZPT-NEO', coeffUp = 1.05, coeffDown = 0.95)
-	table.addCoin( KucoinMarketMonitor,     'KEY-BTC', coeffUp = 1.05, coeffDown = 0.95)
-	table.addCoin( KucoinMarketMonitor,     'OCN-BTC', coeffUp = 1.05, coeffDown = 0.95)
-	table.addCoin( KucoinMarketMonitor,     'COFI-BTC', coeffUp = 1.05, coeffDown = 0.95)
-	table.addCoin( GateMarketMonitor,       'jnt_usdt', coeffUp = 1.05, coeffDown = 0.95)
-	table.addCoin( GateMarketMonitor,       'nas_usdt', coeffUp = 1.05, coeffDown = 0.95)
+	# table.addCoin( BinanceMarketMonitor,    'GTOBTC')
+	# table.addCoin( BinanceMarketMonitor,    'AIONBTC')
+	# table.addCoin( BinanceMarketMonitor,    'BCDBTC', coeffUp = 1.05, coeffDown = 0.95)
+	table.addCoin( KucoinMarketMonitor,     'ZPT-BTC', coeffUp = 1.10, coeffDown = 0.90, avaliableHold = 2163 )
+	table.addCoin( KucoinMarketMonitor,     'KEY-BTC', coeffUp = 1.10, coeffDown = 0.90, avaliableHold = 10064 )
+	# table.addCoin( KucoinMarketMonitor,     'OCN-BTC', coeffUp = 1.10, coeffDown = 0.90)
+	# table.addCoin( KucoinMarketMonitor,     'COFI-BTC', coeffUp = 1.15, coeffDown = 0.85)
+	# table.addCoin( GateMarketMonitor,       'jnt_usdt', coeffUp = 1.05, coeffDown = 0.95)
+	# table.addCoin( GateMarketMonitor,       'nas_usdt', coeffUp = 1.05, coeffDown = 0.95)
 	print("get price...")
 
 	while True:
@@ -191,9 +205,6 @@ def ThreadMonitor():
 			sleep(timeOut)
 			table.clearBank()
 
-		except (KeyboardInterrupt, SystemExit):
-			sys.exit()
-			raise
 		except  Exception as inst:
 			PlaySound("sound/zvuk_bjushhegosja_stekla.ogg", 2); sleep(2)
 			print type(inst)     # the exception instance
@@ -229,7 +240,7 @@ def keyb():
 				curses.endwin()
 				sys.exit()
 			elif key == 'a':
-				PlaySound("sound/nemeckaja-rech-i-signal-trevogi.ogg", 2);	sleep(2)
+				PlaySound("sound/nemeckaja-rech-i-signal-trevogi.ogg", 8);	sleep(8)
 			elif key == os.linesep:
 				break           
 		except Exception as e:
