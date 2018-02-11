@@ -6,6 +6,7 @@ from time import sleep
 import threading
 import curses
 from pynput import keyboard
+import inspect
 
 # https://pyformat.info/
 outFormat1 		 = '│{:^15}│{:^10}│{:^15.8f}'
@@ -86,3 +87,18 @@ def PrintLine(date, color = 0):
 	xIndex += 15
 	if date["avaliableHold"]!= 0:
 		stdscr.addstr(int(date["index"]), xIndex, str("{:^15}".format(date["avaliableHold"]*date["lastPrice"])), curses.color_pair(color[6]))
+
+
+def PrintFrameError(inst):
+  callerframerecord = inspect.stack()[1]
+  frame = callerframerecord[0]
+  info = inspect.getframeinfo(frame)
+  print type(inst) 
+  stdscr.addstr("\n")
+  print inst.args
+  stdscr.addstr("\n")
+  print info.filename + " " + info.function + " " + str(info.lineno)
+  stdscr.addstr("\n")
+  PlaySound("sound/zvuk_bjushhegosja_stekla.ogg", 2); sleep(2)
+  
+

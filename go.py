@@ -95,8 +95,11 @@ class TableConteiner:
 							"avaliableHold":dT['avaliableHold'], "coeffUp": item['coeffUp'], "coeffDown": item['coeffDown']}
 				self.showBank.append( dictTemp )
 
-			except:
-				print "Unexpected error:", sys.exc_info()[0]
+
+			except  Exception as inst:
+				PrintFrameError(inst)
+				stdscr.addstr("\n")
+				print "Unexpected error2:", sys.exc_info()[0]
 				raise  
 			
 		self.swap()
@@ -106,6 +109,8 @@ class TableConteiner:
 		stdscr.clear()
 		lIndex = 0
 		playSound = 0
+		if len(self.swapBank) <= 0:
+			return
 		for Item in self.swapBank:
 			try:
 				Item.update({"index":lIndex})
@@ -149,15 +154,29 @@ class TableConteiner:
 				#   color[self.indexX] = 2
 				PrintLine(Item, color = color)
 				lIndex += 1
-			except:
-				print "Unexpected error:", sys.exc_info()[0]
+			except  Exception as inst:
+				PrintFrameError(inst)
+				print "Unexpected error1:", sys.exc_info()[0]
 				raise 
 		# stdscr.addstr(lIndex, 0, str("exit: ctrl+q"), curses.color_pair(0))
 		if playSound == 1:
 			PlaySound(soundSirenaFile, sirenaSecond)
 		elif playSound == 2:
 			PlaySound(soundSirenaFile1, sirenaSecond)
+		stdscr.addstr("\n")
 		stdscr.refresh()
+	def resetAlert(self):
+		lIndex = 0
+		if len(self.swapBank) <= 0:
+			return
+		for Item in self.swapBank:
+			try:
+				self.monitorSettings[lIndex]["rocketPrice"] = Item["lastPrice"]
+				lIndex += 1
+			except  Exception as inst:
+				PrintFrameError(inst)
+				print "Unexpected error4:", sys.exc_info()[0]
+				raise 
 
 	def swap(self):
 		del self.swapBank[:]
@@ -183,7 +202,7 @@ def ThreadMonitor():
 	# total (HOLD) 52006.50456414 + 4920.296464350002 = 56926.80102849
 	table.addCoin( func = CryptopiaMarketMonitor,   coin = 'HOLD_BTC', upPriceBell =0.00000550,  downPriceBell = 0.00000430, avaliableHold = 56926.80102849 , coeffUp =1.10, coeffDown =0.90)
 	table.addCoin( BinanceMarketMonitor,    'BTCUSDT')
-	# table.addCoin( BinanceMarketMonitor,    'GTOBTC')
+	table.addCoin( BinanceMarketMonitor,    'GTOBTC')
 	# table.addCoin( BinanceMarketMonitor,    'AIONBTC')
 	# table.addCoin( BinanceMarketMonitor,    'BCDBTC', coeffUp = 1.05, coeffDown = 0.95)
 	table.addCoin( KucoinMarketMonitor,     'ZPT-BTC', coeffUp = 1.10, coeffDown = 0.90, avaliableHold = 2163 )
@@ -193,6 +212,7 @@ def ThreadMonitor():
 	# table.addCoin( GateMarketMonitor,       'jnt_usdt', coeffUp = 1.05, coeffDown = 0.95)
 	# table.addCoin( GateMarketMonitor,       'nas_usdt', coeffUp = 1.05, coeffDown = 0.95)
 	print("get price...")
+	stdscr.addstr("\n")
 
 	while True:
 		try:
@@ -206,14 +226,10 @@ def ThreadMonitor():
 			table.clearBank()
 
 		except  Exception as inst:
-			PlaySound("sound/zvuk_bjushhegosja_stekla.ogg", 2); sleep(2)
-			print type(inst)     # the exception instance
-			print inst.args      # arguments stored in .args
-			print inst   
-			print "Except"
+			PrintFrameError(inst)
 	
 # https://pythonworld.ru/web/cgi-1.html
-from http.server import HTTPServer, CGIHTTPRequestHandler
+# from http.server import HTTPServer, CGIHTTPRequestHandler
 # from pynput import keyboard
 
 
@@ -241,10 +257,12 @@ def keyb():
 				sys.exit()
 			elif key == 'a':
 				PlaySound("sound/nemeckaja-rech-i-signal-trevogi.ogg", 8);	sleep(8)
+			elif key == 'r':
+				table.resetAlert()
 			elif key == os.linesep:
 				break           
-		except Exception as e:
-		   # No input   
+		except Exception as inst:
+		   PrintFrameError(inst)
 		   pass   
 
 
