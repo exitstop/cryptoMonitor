@@ -100,7 +100,7 @@ class TableConteiner:
 				PrintFrameError(inst)
 				stdscr.addstr("\n")
 				print "Unexpected error2:", sys.exc_info()[0]
-				raise  
+				# raise
 			
 		self.swap()
 		self.rocket["cout"] = self.rocket["cout"] + 1
@@ -157,7 +157,8 @@ class TableConteiner:
 			except  Exception as inst:
 				PrintFrameError(inst)
 				print "Unexpected error1:", sys.exc_info()[0]
-				raise 
+				lIndex += 1
+				# raise 
 		# stdscr.addstr(lIndex, 0, str("exit: ctrl+q"), curses.color_pair(0))
 		if playSound == 1:
 			PlaySound(soundSirenaFile, sirenaSecond)
@@ -176,7 +177,7 @@ class TableConteiner:
 			except  Exception as inst:
 				PrintFrameError(inst)
 				print "Unexpected error4:", sys.exc_info()[0]
-				raise 
+				# raise 
 
 	def swap(self):
 		del self.swapBank[:]
@@ -201,12 +202,15 @@ def ThreadMonitor():
 
 	# total (HOLD) 52006.50456414 + 4920.296464350002 = 56926.80102849
 	table.addCoin( func = CryptopiaMarketMonitor,   coin = 'HOLD_BTC', upPriceBell =0.00000550,  downPriceBell = 0.00000430, avaliableHold = 56926.80102849 , coeffUp =1.10, coeffDown =0.90)
+	table.addCoin( func = CryptopiaMarketMonitor,   coin = 'OTN_BTC', coeffUp =1.10, coeffDown =0.90)
 	table.addCoin( BinanceMarketMonitor,    'BTCUSDT')
-	table.addCoin( BinanceMarketMonitor,    'GTOBTC')
+	# table.addCoin( BinanceMarketMonitor,    'GTOBTC')
+	# table.addCoin( BinanceMarketMonitor,    'OTNBTC')
 	# table.addCoin( BinanceMarketMonitor,    'AIONBTC')
 	# table.addCoin( BinanceMarketMonitor,    'BCDBTC', coeffUp = 1.05, coeffDown = 0.95)
 	table.addCoin( KucoinMarketMonitor,     'ZPT-BTC', coeffUp = 1.10, coeffDown = 0.90, avaliableHold = 2163 )
 	table.addCoin( KucoinMarketMonitor,     'KEY-BTC', coeffUp = 1.10, coeffDown = 0.90, avaliableHold = 10064 )
+	table.addCoin( KucoinMarketMonitor,     'R-BTC' )
 	# table.addCoin( KucoinMarketMonitor,     'OCN-BTC', coeffUp = 1.10, coeffDown = 0.90)
 	# table.addCoin( KucoinMarketMonitor,     'COFI-BTC', coeffUp = 1.15, coeffDown = 0.85)
 	# table.addCoin( GateMarketMonitor,       'jnt_usdt', coeffUp = 1.05, coeffDown = 0.95)
